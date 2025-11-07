@@ -1,0 +1,13 @@
+revenium_middleware_ollama/
+examples/
+tests/
+pyproject.toml
+.env.example
+.gitignore
+README.md
+LICENSE
+CHANGELOG.md
+CONTRIBUTING.md
+SECURITY.md
+CODE_OF_CONDUCT.md
+public-allowlist-python.txt

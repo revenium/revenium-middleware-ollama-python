@@ -1,0 +1,70 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+eggs/
+sdist/
+*.egg-info/
+.egg/
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Pyenv
+.python-version
+
+# Environment variables
+.env
+.env.test
+.env.local
+
+# Virtual environment
+venv/
+env/
+venv3/
+ENV/
+env.bak/
+venv.bak/
+
+# DS_Store
+.DS_Store
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pytest cache
+.pytest_cache/
+
+# Coverage reports
+htmlcov/
+.coverage
+coverage.xml
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# VSCode
+.vscode/
+
+# Augment
+.augment
+
+# IntelliJ IDEA / PyCharm
+.idea/
+
+# Swap files
+*.swp
+AGENTS.md
+
+# Internal development tools
+.taskmaster/
