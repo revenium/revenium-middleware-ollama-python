@@ -6,20 +6,34 @@ This directory contains practical examples demonstrating how to use the Revenium
 
 ### Setup (One-time)
 
-1. Copy the environment template:
+1. Create virtual environment:
+```bash
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+2. Install dependencies:
+```bash
+pip install revenium-middleware-ollama ollama python-dotenv
+```
+
+3. Copy the environment template:
 ```bash
 cd examples
 cp ../.env.example .env
 ```
 
-2. Edit `.env` and add your Revenium API key:
+4. Edit `.env` and add your Revenium API key:
 ```bash
 REVENIUM_METERING_API_KEY=hak_your_api_key_here
 REVENIUM_METERING_BASE_URL=https://api.revenium.ai
 REVENIUM_LOG_LEVEL=INFO
 ```
 
-3. Ensure Ollama is running:
+5. Ensure Ollama is running:
 ```bash
 ollama serve
 ```
