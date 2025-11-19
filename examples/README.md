@@ -272,7 +272,7 @@ response = ollama.chat(
 
 **Solution:** Make sure your `.env` file exists and contains:
 ```bash
-REVENIUM_METERING_API_KEY=hak_your_api_key_here
+REVENIUM_METERING_API_KEY="hak_your_api_key_here"
 ```
 
 ### Error: Model not found

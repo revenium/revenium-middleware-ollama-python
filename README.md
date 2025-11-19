@@ -24,7 +24,7 @@ pip install revenium-middleware-ollama
 
 ## Quick Start
 
-**For complete examples and setup instructions, see [`examples/README.md`](https://github.com/revenium/revenium-middleware-ollama-python/blob/HEAD/examples/README.md)**
+**For complete examples and setup instructions, see [`examples/README.md`](examples/README.md).**
 
 ### 1. Create Project Directory
 
@@ -96,12 +96,12 @@ print(response['message']['content'])
 
 **That's it!** The middleware automatically meters all Ollama API calls. No code changes required.
 
-**For complete examples and setup instructions, see [`examples/README.md`](https://github.com/revenium/revenium-middleware-ollama-python/blob/HEAD/examples/README.md)**
+**For complete examples and setup instructions, see [`examples/README.md`](examples/README.md).**
 
-- [`examples/getting_started.py`](https://github.com/revenium/revenium-middleware-ollama-python/blob/HEAD/examples/getting_started.py) - Minimal example with automatic metering
-- [`examples/example_simple.py`](https://github.com/revenium/revenium-middleware-ollama-python/blob/HEAD/examples/example_simple.py) - Basic middleware usage
-- [`examples/example_metadata.py`](https://github.com/revenium/revenium-middleware-ollama-python/blob/HEAD/examples/example_metadata.py) - Enhanced tracking with metadata
-- [`examples/example_streaming.py`](https://github.com/revenium/revenium-middleware-ollama-python/blob/HEAD/examples/example_streaming.py) - Streaming responses
+- [`examples/getting_started.py`](examples/getting_started.py) - Minimal example with automatic metering
+- [`examples/example_simple.py`](examples/example_simple.py) - Basic middleware usage
+- [`examples/example_metadata.py`](examples/example_metadata.py) - Enhanced tracking with metadata
+- [`examples/example_streaming.py`](examples/example_streaming.py) - Streaming responses
 
 ## Usage
 
@@ -130,8 +130,7 @@ print(response['message']['content'])
 ```
 
 The middleware automatically intercepts Ollama API calls and sends metering data to Revenium without requiring any
-changes to your existing code. Make sure to set the `REVENIUM_METERING_API_KEY` in your `.env` file for authentication
-with the Revenium service.
+changes to your existing code.
 
 ### Enhanced Tracking with Metadata
 
