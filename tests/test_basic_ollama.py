@@ -9,11 +9,11 @@ import pytest
 import ollama
 
 
-@pytest.mark.unit
+@pytest.mark.integration
 class TestBasicOllama:
     """Test basic Ollama functionality without middleware."""
 
-    def test_ollama_chat_works(self, model_name):
+    def test_ollama_chat_works(self, setup_integration_test, model_name):
         """Test that basic Ollama chat functionality works."""
         response = ollama.chat(
             model=model_name,
@@ -33,7 +33,7 @@ class TestBasicOllama:
         if 'eval_count' in response:
             assert response['eval_count'] > 0, "Should have completion tokens"
 
-    def test_ollama_generate_works(self, model_name):
+    def test_ollama_generate_works(self, setup_integration_test, model_name):
         """Test that basic Ollama generate functionality works."""
         response = ollama.generate(
             model=model_name,

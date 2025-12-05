@@ -233,6 +233,27 @@ The `usage_metadata` parameter supports the following fields:
 
 **All metadata fields are optional**. Adding them enables more detailed reporting and analytics in Revenium.
 
+### Trace Visualization Fields (v0.2.0+)
+
+Enhanced observability fields for distributed tracing and analytics. These can be set via environment variables or passed in `usage_metadata`:
+
+| Field | Environment Variable | Description | Use Case |
+|-------|---------------------|-------------|----------|
+| `environment` | `REVENIUM_ENVIRONMENT` | Deployment environment (e.g., "production", "staging") | Track usage across different deployment environments; auto-detects from `ENVIRONMENT`, `DEPLOYMENT_ENV` |
+| `region` | `REVENIUM_REGION` | Cloud region identifier (e.g., "us-east-1", "eastus") | Multi-region deployment tracking; auto-detects from `AWS_REGION`, `AZURE_REGION`, `GCP_REGION` |
+| `credential_alias` | `REVENIUM_CREDENTIAL_ALIAS` | Human-readable API key name (e.g., "prod-ollama-key") | Track which credential was used for credential rotation and security auditing |
+| `trace_type` | `REVENIUM_TRACE_TYPE` | Workflow category identifier (max 128 chars) | Group similar workflows (e.g., "customer-support", "data-analysis") for analytics |
+| `trace_name` | `REVENIUM_TRACE_NAME` | Human-readable trace label (max 256 chars) | Label trace instances (e.g., "Customer Support Chat", "Document Analysis") |
+| `parent_transaction_id` | `REVENIUM_PARENT_TRANSACTION_ID` | Parent transaction ID for distributed tracing | Link child operations to parent transactions across services |
+| `transaction_name` | `REVENIUM_TRANSACTION_NAME` | Human-friendly operation name | Label individual operations (e.g., "Generate Response", "Analyze Sentiment") |
+
+**Note:** `operation_type` and `operation_subtype` are automatically detected by the middleware based on the API endpoint and request parameters.
+
+**Resources:**
+- [API Reference](https://revenium.readme.io/reference/meter_ai_completion) - Complete metadata field documentation
+- [`.env.example`](.env.example) - Environment variable configuration examples
+- [`examples/trace_visualization_example.py`](examples/trace_visualization_example.py) - Comprehensive trace visualization examples
+
 ### Response Attributes
 
 Response objects include a `_revenium_transaction_id` attribute for correlating requests with Revenium metering records:

@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2025-12-05
+
+### Added
+- Trace visualization support with 8 new fields for enhanced observability:
+  - `environment` - Deployment environment tracking (production, staging, etc.)
+  - `region` - Cloud region identifier with auto-detection
+  - `credential_alias` - Human-readable API key identification
+  - `trace_type` - Workflow category identifier for grouping
+  - `trace_name` - Human-readable trace labels
+  - `parent_transaction_id` - Distributed tracing support
+  - `transaction_name` - Operation-level naming
+  - `operation_subtype` - Additional operation detail (auto-detected)
+- New `trace_fields.py` module for trace field capture and validation
+- Comprehensive trace visualization example (`examples/trace_visualization_example.py`)
+- Support for both environment variables and `usage_metadata` parameters for trace fields
+- Auto-detection of environment and region from common cloud provider env vars
+
+### Changed
+- Updated `revenium_middleware` dependency to >=0.3.5
+- Enhanced README with trace visualization fields documentation
+- Updated `.env.example` with trace visualization field examples and comments
+
+### Documentation
+- Added "Trace Visualization Fields (v0.2.0+)" section to README
+- Added comprehensive trace visualization example with 5 scenarios
+- Updated `.env.example` with detailed trace field documentation
+
 ## [0.1.18] - 2025-11-17
 
 ### Documentation

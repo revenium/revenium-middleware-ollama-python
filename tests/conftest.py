@@ -6,40 +6,34 @@ import os
 import pytest
 
 
-@pytest.fixture(scope="session", autouse=True)
-def setup_test_environment():
+@pytest.fixture(scope="function")
+def setup_integration_test():
     """
-    Configure environment variables for all tests.
+    Configure environment variables for integration tests.
 
-    This fixture runs once per test session and validates that required
-    environment variables are set. It sets default values for optional
-    variables if they are not already configured.
+    This fixture validates that required environment variables are set
+    for integration tests that need to connect to real services.
 
     Required environment variables:
         - REVENIUM_METERING_API_KEY: Your Revenium API key (REQUIRED)
 
     Optional environment variables (with defaults):
-        - REVENIUM_METERING_BASE_URL: Uses package default (https://api.revenium.ai)
+        - REVENIUM_METERING_BASE_URL: Uses package default
         - REVENIUM_LOG_LEVEL: Defaults to INFO
     """
-    # Validate required environment variables
+    # Validate required environment variables for integration tests
     if not os.environ.get('REVENIUM_METERING_API_KEY'):
-        raise ValueError(
-            "REVENIUM_METERING_API_KEY environment variable is required for tests. "
-            "Please set it in your environment or .env file. "
-            "See tests/README.md for setup instructions."
+        pytest.skip(
+            "REVENIUM_METERING_API_KEY environment variable is required "
+            "for integration tests. Please set it in your environment "
+            "or .env file. See tests/README.md for setup instructions."
         )
 
     # Set default log level if not already set
     if not os.environ.get('REVENIUM_LOG_LEVEL'):
         os.environ['REVENIUM_LOG_LEVEL'] = 'INFO'
 
-    # Note: REVENIUM_METERING_BASE_URL will use package default (https://api.revenium.ai) if not set
-
     yield
-
-    # Cleanup after all tests (optional)
-    # Could reset environment variables here if needed
 
 
 @pytest.fixture(scope="session")

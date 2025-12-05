@@ -6,6 +6,17 @@ import types
 logger = logging.getLogger("revenium_middleware.extension")
 
 from revenium_middleware import client, run_async_in_thread, shutdown_event
+from .trace_fields import (
+    get_environment,
+    get_region,
+    get_credential_alias,
+    get_trace_type,
+    get_trace_name,
+    get_parent_transaction_id,
+    get_transaction_name,
+    get_retry_number,
+    detect_operation_type
+)
 
 
 def add_transaction_id_to_response(response, transaction_id):
@@ -61,7 +72,10 @@ def chat_wrapper(wrapped, _, args, kwargs):
 
     # Check if response is a generator (streaming response)
     if is_streaming and isinstance(response, types.GeneratorType):
-        return handle_streaming_response(response, request_time_dt, usage_metadata, transaction_id)
+        return handle_streaming_response(
+            response, request_time_dt, usage_metadata,
+            transaction_id, 'chat', kwargs
+        )
     else:
         # Handle non-streaming response
         logger.debug("Ollama chat response: %s", response)
@@ -69,7 +83,10 @@ def chat_wrapper(wrapped, _, args, kwargs):
         # Add transaction ID to response object
         add_transaction_id_to_response(response, transaction_id)
 
-        handle_response(response, request_time_dt, usage_metadata, False, transaction_id)
+        handle_response(
+            response, request_time_dt, usage_metadata,
+            False, transaction_id, 'chat', kwargs
+        )
         return response
 
 
@@ -96,7 +113,10 @@ def generate_wrapper(wrapped, _, args, kwargs):
 
     # Check if response is a generator (streaming response)
     if is_streaming and isinstance(response, types.GeneratorType):
-        return handle_streaming_response(response, request_time_dt, usage_metadata, transaction_id)
+        return handle_streaming_response(
+            response, request_time_dt, usage_metadata,
+            transaction_id, 'generate', kwargs
+        )
     else:
         # Handle non-streaming response
         logger.debug("Ollama generate response: %s", response)
@@ -104,7 +124,10 @@ def generate_wrapper(wrapped, _, args, kwargs):
         # Add transaction ID to response object
         add_transaction_id_to_response(response, transaction_id)
 
-        handle_response(response, request_time_dt, usage_metadata, False, transaction_id)
+        handle_response(
+            response, request_time_dt, usage_metadata,
+            False, transaction_id, 'generate', kwargs
+        )
         return response
 
 
@@ -112,7 +135,9 @@ def handle_streaming_response(
     generator,
     request_time_dt,
     usage_metadata,
-    transaction_id
+    transaction_id,
+    endpoint,
+    request_kwargs
 ):
     """
     Handles streaming responses by collecting all chunks and processing the
@@ -124,6 +149,8 @@ def handle_streaming_response(
         request_time_dt: The request timestamp
         usage_metadata: Metadata for metering
         transaction_id: The transaction ID to add to responses
+        endpoint: The endpoint being called ('chat', 'generate', etc.)
+        request_kwargs: The request kwargs for operation type detection
     """
     chunks = []
     final_response = None
@@ -147,7 +174,9 @@ def handle_streaming_response(
                 request_time_dt,
                 usage_metadata,
                 True,
-                transaction_id
+                transaction_id,
+                endpoint,
+                request_kwargs
             )
 
     return wrapped_generator()
@@ -158,7 +187,9 @@ def handle_response(
     request_time_dt,
     usage_metadata,
     is_streaming,
-    transaction_id
+    transaction_id,
+    endpoint,
+    request_kwargs
 ):
     """
     Process a complete response (either streaming or non-streaming) and
@@ -170,6 +201,8 @@ def handle_response(
         usage_metadata: Metadata for metering
         is_streaming: Whether this is a streaming response
         transaction_id: The transaction ID for this request
+        endpoint: The endpoint being called ('chat', 'generate', etc.)
+        request_kwargs: The request kwargs for operation type detection
     """
 
     async def metering_call():
@@ -230,6 +263,19 @@ def handle_response(
                         "value": nested_subscriber["credential"].get("value")
                     }
 
+            # Detect operation type
+            operation_type = detect_operation_type(endpoint, request_kwargs)
+
+            # Capture trace visualization fields
+            environment = get_environment()
+            region = get_region()
+            credential_alias = get_credential_alias()
+            trace_type = get_trace_type()
+            trace_name = get_trace_name()
+            parent_transaction_id = get_parent_transaction_id()
+            transaction_name = get_transaction_name(usage_metadata)
+            retry_number = get_retry_number()
+
             # Prepare arguments for create_completion
             completion_args = {
                 "cache_creation_token_count": cached_tokens,
@@ -260,7 +306,17 @@ def handle_response(
                 "agent": usage_metadata.get("agent"),
                 "response_quality_score": usage_metadata.get("response_quality_score"),
                 "is_streamed": is_streaming,
-                "middleware_source": "PYTHON"
+                "middleware_source": "PYTHON",
+                # Trace visualization fields
+                "operation_type": operation_type,
+                "environment": environment,
+                "region": region,
+                "credential_alias": credential_alias,
+                "trace_type": trace_type,
+                "trace_name": trace_name,
+                "parent_transaction_id": parent_transaction_id,
+                "transaction_name": transaction_name,
+                "retry_number": retry_number
             }
 
             # Log the arguments at debug level
